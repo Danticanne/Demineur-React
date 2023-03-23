@@ -4,7 +4,8 @@ import "./App.css";
 import Case from "./component/case";
 
 function App() {
-  const [nbBomb, setBomb] = useState(15);
+  const [rerender, setRerender] = useState(false);
+  const [nbBomb, setBomb] = useState(20);
   const [firstClick, setFirstClick] = useState(false);
   const [unverifiedCases, setUnverifiedCases] = useState([]);
   const [cases, setCases] = useState(
@@ -12,7 +13,7 @@ function App() {
       .fill()
       .map(() =>
         Array(10).fill({
-          show: true,
+          show: false,
           bomb: false,
           value: 0,
           bombable: true,
@@ -47,7 +48,6 @@ function App() {
           XBomb = Math.floor(Math.random() * copieCases.length);
           YBomb = Math.floor(Math.random() * copieCases[0].length);
         }
-        console.log(XBomb);
         if (copieCases[XBomb][YBomb].bombable) {
           copieCases[XBomb][YBomb] = {
             show: copieCases[XBomb][YBomb].show,
@@ -85,6 +85,70 @@ function App() {
         })
       })
     }
+
+    //si clique sur une case qui n'est pas une bombe :
+
+    if(!(copieCases[X][Y].bomb)){
+      copieCases[X][Y] = {
+        show: true,
+        bomb: copieCases[X][Y].bomb,
+        value: copieCases[X][Y].value,
+        bombable: copieCases[X][Y].bombable,   
+      }
+
+      let copieUnverified = [];
+
+      setRerender(!rerender)
+      
+      //si la valeur est nulle, réveler toutes les cases jusqu'à trouver des cases avec des bombes autour
+
+      if(copieCases[X][Y].value == 0){
+        for (let x = -1; x <= 1; x++) {
+          if (X - x >= 0 && X - x < copieCases.length) {
+            for (let y = -1; y <= 1; y++) {
+              if (Y - y >= 0 && Y - y < copieCases[X - x].length) {
+                if(copieCases[X-x][Y-y].value == 0){
+                  copieUnverified.push({X: X-x, Y: Y-y})
+                }
+                copieCases[X-x][Y-y] = {
+                  show: true,
+                  bomb: copieCases[X-x][Y-y].bomb,
+                  value: copieCases[X-x][Y-y].value,
+                  bombable: copieCases[X-x][Y-y].bombable,   
+                }
+              }
+            }
+          }
+        }
+
+        //while loop pour trouver toutes les cases vide à partir de celle cliqué juste au dessus
+
+        while(copieUnverified != []){
+          let Xel = copieUnverified[0].X
+          let Yel = copieUnverified[0].Y
+          for (let x = -1; x <= 1; x++) {
+            if (Xel - x >= 0 && Xel - x < copieCases.length) {
+              for (let y = -1; y <= 1; y++) {
+                if (Yel - y >= 0 && Yel - y < copieCases[Xel - x].length) {
+                  if(copieCases[Xel-x][Yel-y].value == 0 && !(copieCases[Xel-x][Yel-y].show)){
+                    copieUnverified.push({X: Xel-x, Y: Yel-y})
+                  }
+                  copieCases[Xel-x][Yel-y] = {
+                    show: true,
+                    bomb: copieCases[Xel-x][Yel-y].bomb,
+                    value: copieCases[Xel-x][Yel-y].value,
+                    bombable: copieCases[Xel-x][Yel-y].bombable,   
+                  }
+                }
+              }
+            }
+          }
+          copieUnverified.splice(0, 1)
+          console.log(copieUnverified)
+        }
+      }
+    }
+ 
     setCases(copieCases);
   }
 

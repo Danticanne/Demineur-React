@@ -11,6 +11,7 @@
     align-items: center;
     font-size: 30px;
     position: relative;
+    transition: 1s;
 }
 .unrevealed::after{
     content: '';
@@ -26,4 +27,11 @@
     justify-content: center;
     align-items: center;
     font-size: 30px;
+    transition: 0.5s;
+}
+.unrevealed:hover::after{
+    border-bottom: 3px solid grey;
+    border-right: 3px solid grey;
+    border-top: 3px solid rgb(219, 219, 219);
+    border-left: 3px solid  rgb(219, 219, 219);
 }
