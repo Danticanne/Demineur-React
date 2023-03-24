@@ -11,11 +11,13 @@ export default function Board(props) {
             {mainEl.map((sEl, keyY) => {
               return (
                 <Case
+                  stateDrapeau={props.stateDrapeau}
                   X={keyX}
                   Y={keyY}
                   value={sEl.value}
                   show={sEl.show}
                   bomb={sEl.bomb}
+                  flag={sEl.flag}
                   onClick={(X, Y) => {
                     props.handleClick(X, Y);
                   }}

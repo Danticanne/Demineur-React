@@ -1,7 +1,7 @@
 .case{
     background-color: rgb(180, 180, 180);
-    width: 40px;
-    height: 40px;
+    width: 25px;
+    height: 25px;
     border-top: 5px solid grey;
     border-left: 5px solid grey;
     border-bottom: 5px solid rgb(233, 233, 233);
@@ -9,9 +9,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
+    font-size: 26px;
     position: relative;
     transition: 1s;
+}
+.bombe{
+    scale: 0.60;
 }
 .unrevealed::after{
     content: '';
@@ -34,4 +37,9 @@
     border-right: 3px solid grey;
     border-top: 3px solid rgb(219, 219, 219);
     border-left: 3px solid  rgb(219, 219, 219);
+}
+.drapeauCase{
+    scale: 0.80;
+    position: absolute;
+    z-index: 2;
 }
