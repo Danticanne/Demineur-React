@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@700&display=swap');
 *{
   padding: 0;
   margin: 0;
@@ -10,8 +10,4 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-.board{
-  display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto auto;
 }
