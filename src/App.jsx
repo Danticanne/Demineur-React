@@ -17,7 +17,7 @@ function App() {
     Array(10)
       .fill()
       .map(() =>
-        Array(10).fill({
+        Array(15).fill({
           show: false,
           bomb: false,
           value: 0,

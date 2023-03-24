@@ -12,6 +12,7 @@
     font-size: 26px;
     position: relative;
     transition: 1s;
+    z-index: 0;
 }
 .bombe{
     scale: 0.60;
@@ -31,6 +32,7 @@
     align-items: center;
     font-size: 30px;
     transition: 0.5s;
+    z-index: 0;
 }
 .unrevealed:hover::after{
     border-bottom: 3px solid grey;
