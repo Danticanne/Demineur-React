@@ -1,18 +1,19 @@
-import { faL } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Board from "./component/board";
 import DrapeauSlider from "./component/drapeauSlider";
 import Compteur from "./component/compteurBombe";
 import Restart from "./component/restart";
+import Timer from "./component/timer";
 
 function App() {
   const [rerender, setRerender] = useState(false);
-  const [nbBomb, setNbBomb] = useState(5);
+  const [nbBomb, setNbBomb] = useState(25);
   const [firstClick, setFirstClick] = useState(false);
   const [drapeau, setDrapeau] = useState(false);
   const [nbBombeLeft, setNbBombeLeft] = useState(nbBomb);
   const [gameState, setGameState] = useState(0); //si ==1 alors jeu perdu si ==2 alors jeu gagné
+  const [temps, setTemps] = useState(0);
 
   //création d'un array 2d pour accéder facilement à toutes les cases
 
@@ -20,7 +21,7 @@ function App() {
     Array(10)
       .fill()
       .map(() =>
-        Array(10).fill({
+        Array(12).fill({
           show: false,
           bomb: false,
           value: 0,
@@ -30,7 +31,15 @@ function App() {
       )
   );
 
+
   //Ici toute la logique du jeu; elle se passe quand le joueur clique sur une case
+  useEffect(() => {
+    const id = setInterval(() => setTemps((temps) => temps + 1), 1000);
+
+    return () => {
+      clearInterval(id);
+    };
+  }, []);
 
   function handleClick(X, Y) {
     if (gameState == 0) {
@@ -40,6 +49,7 @@ function App() {
         if (!copieCases[X][Y].flag) {
           //si c'est le prremier clique de la partie
           if (!firstClick) {
+            setTemps(0)
             setFirstClick(true);
             //chaque element autour de l'element X Y est ciblé :
             for (let x = -1; x <= 1; x++) {
@@ -283,6 +293,7 @@ function App() {
               handleRestart();
             }}
           />
+          <Timer temps={firstClick?temps:0}></Timer>
         </div>
         <Board
           stateDrapeau={drapeau}

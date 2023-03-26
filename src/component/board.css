@@ -1,3 +1,7 @@
 .board{
     display: grid;
+    border-bottom: 15px solid grey;
+    border-right: 15px solid grey;
+    border-top: 15px solid rgb(235, 235, 235);
+    border-left: 15px solid  rgb(235, 235, 235);
 }
