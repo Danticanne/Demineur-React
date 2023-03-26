@@ -3,6 +3,7 @@ import { useState } from "react";
 import "./App.css";
 import Board from "./component/board";
 import DrapeauSlider from "./component/drapeauSlider";
+import Compteur from "./component/compteurBombe";
 
 function App() {
   const [rerender, setRerender] = useState(false);
@@ -10,6 +11,7 @@ function App() {
   const [firstClick, setFirstClick] = useState(false);
   const [gameOver, setGameOver] = useState(false);
   const [drapeau, setDrapeau] = useState(false)
+  const [nbBombeLeft, setNbBombeLeft] = useState(nbBomb)
 
   //création d'un array 2d pour accéder facilement à toutes les cases
 
@@ -17,7 +19,7 @@ function App() {
     Array(10)
       .fill()
       .map(() =>
-        Array(15).fill({
+        Array(10).fill({
           show: false,
           bomb: false,
           value: 0,
@@ -202,6 +204,11 @@ function App() {
       }else{
         //si mode drapeau est activé
         if(!copieCases[X][Y].show){
+          if(copieCases[X][Y].flag){
+            setNbBombeLeft(nbBombeLeft+1)
+          }else{
+            setNbBombeLeft(nbBombeLeft-1)
+          }
           console.log('test') 
           copieCases[X][Y] = {
             show: false,
@@ -228,6 +235,7 @@ function App() {
   return (
     <div className="App">
       <div className="container">
+        <Compteur nbBombeLeft={nbBombeLeft}/>
         <Board
           stateDrapeau={drapeau}
           cases={cases}
