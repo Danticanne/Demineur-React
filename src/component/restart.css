@@ -1,0 +1,12 @@
+.arrow{
+    font-size: 30px;
+}
+.restartButton{
+    width: 60px;
+    height: 60px;
+    border-bottom: 5px solid grey;
+    border-right: 5px solid grey;
+    border-top: 5px solid rgb(219, 219, 219);
+    border-left: 5px solid  rgb(219, 219, 219);
+    background-color: rgb(196, 196, 196);
+}

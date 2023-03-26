@@ -4,14 +4,15 @@ import "./App.css";
 import Board from "./component/board";
 import DrapeauSlider from "./component/drapeauSlider";
 import Compteur from "./component/compteurBombe";
+import Restart from "./component/restart";
 
 function App() {
   const [rerender, setRerender] = useState(false);
-  const [nbBomb, setBomb] = useState(20);
+  const [nbBomb, setNbBomb] = useState(5);
   const [firstClick, setFirstClick] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [drapeau, setDrapeau] = useState(false)
-  const [nbBombeLeft, setNbBombeLeft] = useState(nbBomb)
+  const [drapeau, setDrapeau] = useState(false);
+  const [nbBombeLeft, setNbBombeLeft] = useState(nbBomb);
+  const [gameState, setGameState] = useState(0); //si ==1 alors jeu perdu si ==2 alors jeu gagné
 
   //création d'un array 2d pour accéder facilement à toutes les cases
 
@@ -32,11 +33,11 @@ function App() {
   //Ici toute la logique du jeu; elle se passe quand le joueur clique sur une case
 
   function handleClick(X, Y) {
-    if (!gameOver) {
+    if (gameState == 0) {
       let copieCases = cases;
       //si mode drapeau n'est pas activé
-      if(!drapeau){
-        if(!copieCases[X][Y].flag){
+      if (!drapeau) {
+        if (!copieCases[X][Y].flag) {
           //si c'est le prremier clique de la partie
           if (!firstClick) {
             setFirstClick(true);
@@ -79,7 +80,7 @@ function App() {
               el.forEach((elS, indexS) => {
                 if (!copieCases[index][indexS].bomb) {
                   let nbBombAutour = 0;
-    
+
                   for (let x = -1; x <= 1; x++) {
                     if (index - x >= 0 && index - x < copieCases.length) {
                       for (let y = -1; y <= 1; y++) {
@@ -94,7 +95,7 @@ function App() {
                       }
                     }
                   }
-    
+
                   copieCases[index][indexS] = {
                     show: copieCases[index][indexS].show,
                     bomb: false,
@@ -106,9 +107,9 @@ function App() {
               });
             });
           }
-    
+
           //si clique sur une case qui n'est pas une bombe :
-    
+
           if (!copieCases[X][Y].bomb) {
             copieCases[X][Y] = {
               show: true,
@@ -117,13 +118,13 @@ function App() {
               bombable: copieCases[X][Y].bombable,
               flag: copieCases[X][Y].value,
             };
-    
+
             let copieUnverified = [];
-    
+
             setRerender(!rerender);
-    
+
             //si la valeur est nulle, réveler toutes les cases jusqu'à trouver des cases avec des bombes autour
-    
+
             if (copieCases[X][Y].value == 0) {
               for (let x = -1; x <= 1; x++) {
                 if (X - x >= 0 && X - x < copieCases.length) {
@@ -143,16 +144,19 @@ function App() {
                   }
                 }
               }
-    
+
               //while loop pour trouver toutes les cases vide à partir de celle cliqué juste au dessus
-    
+
               while (copieUnverified != []) {
                 let Xel = copieUnverified[0].X;
                 let Yel = copieUnverified[0].Y;
                 for (let x = -1; x <= 1; x++) {
                   if (Xel - x >= 0 && Xel - x < copieCases.length) {
                     for (let y = -1; y <= 1; y++) {
-                      if (Yel - y >= 0 && Yel - y < copieCases[Xel - x].length) {
+                      if (
+                        Yel - y >= 0 &&
+                        Yel - y < copieCases[Xel - x].length
+                      ) {
                         if (
                           copieCases[Xel - x][Yel - y].value == 0 &&
                           !copieCases[Xel - x][Yel - y].show
@@ -183,7 +187,7 @@ function App() {
               bombable: copieCases[X][Y].bombable,
               flag: copieCases[X][Y].value,
             };
-            setGameOver(true);
+            setGameState(1);
             copieCases.forEach((el, index) => {
               el.forEach((elS, indexS) => {
                 if (copieCases[index][indexS].bomb) {
@@ -198,26 +202,43 @@ function App() {
               });
             });
           }
-
         }
 
-      }else{
+        //vérifier si le joueur a gagné
+
+        let win = true;
+
+        copieCases.forEach((el, index) => {
+          el.forEach((elS, indexS) => {
+            if (
+              !copieCases[index][indexS].show &&
+              !copieCases[index][indexS].bomb
+            ) {
+              win = false;
+            }
+          });
+        });
+
+        if (win) {
+          setGameState(2);
+        }
+      } else {
         //si mode drapeau est activé
-        if(!copieCases[X][Y].show){
-          if(copieCases[X][Y].flag){
-            setNbBombeLeft(nbBombeLeft+1)
-          }else{
-            setNbBombeLeft(nbBombeLeft-1)
+        if (!copieCases[X][Y].show) {
+          if (copieCases[X][Y].flag) {
+            setNbBombeLeft(nbBombeLeft + 1);
+          } else {
+            setNbBombeLeft(nbBombeLeft - 1);
           }
-          console.log('test') 
+          console.log("test");
           copieCases[X][Y] = {
             show: false,
             bomb: copieCases[X][Y].bomb,
             value: copieCases[X][Y].value,
             bombable: copieCases[X][Y].bombable,
             flag: !copieCases[X][Y].flag,
-          }
-          setRerender(!rerender)
+          };
+          setRerender(!rerender);
         }
       }
       setCases(copieCases);
@@ -226,8 +247,27 @@ function App() {
 
   let gridTemplate = "auto ".repeat(cases.length);
 
-  function handleDrapeauClick(){
-    setDrapeau(!drapeau)
+  function handleDrapeauClick() {
+    setDrapeau(!drapeau);
+  }
+
+  function handleRestart() {
+    setFirstClick(false);
+    setNbBombeLeft(nbBomb);
+    setGameState(0);
+    setCases(
+      Array(10)
+        .fill()
+        .map(() =>
+          Array(10).fill({
+            show: false,
+            bomb: false,
+            value: 0,
+            bombable: true,
+            flag: false,
+          })
+        )
+    );
   }
 
   //return
@@ -235,7 +275,15 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <Compteur nbBombeLeft={nbBombeLeft}/>
+        <div className="menu">
+          <Compteur nbBombeLeft={nbBombeLeft} />
+          <Restart
+            gameState={gameState}
+            onClick={() => {
+              handleRestart();
+            }}
+          />
+        </div>
         <Board
           stateDrapeau={drapeau}
           cases={cases}
@@ -244,7 +292,12 @@ function App() {
             handleClick(X, Y);
           }}
         />
-        <DrapeauSlider stateDrapeau={drapeau} onClick={() => {handleDrapeauClick()}}></DrapeauSlider>
+        <DrapeauSlider
+          stateDrapeau={drapeau}
+          onClick={() => {
+            handleDrapeauClick();
+          }}
+        ></DrapeauSlider>
       </div>
     </div>
   );

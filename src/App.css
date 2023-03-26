@@ -40,3 +40,9 @@
     z-index: 0;
   }
 }
+
+.menu{
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
