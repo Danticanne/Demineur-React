@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Board from "./component/board";
 import DrapeauSlider from "./component/drapeauSlider";
 import Compteur from "./component/compteurBombe";
@@ -14,6 +16,7 @@ function App() {
   const [nbBombeLeft, setNbBombeLeft] = useState(nbBomb);
   const [gameState, setGameState] = useState(0); //si ==1 alors jeu perdu si ==2 alors jeu gagné
   const [temps, setTemps] = useState(0);
+  const [tempsF, setTempsF] = useState(0);
 
   //création d'un array 2d pour accéder facilement à toutes les cases
 
@@ -34,11 +37,14 @@ function App() {
 
   //Ici toute la logique du jeu; elle se passe quand le joueur clique sur une case
   useEffect(() => {
-    const id = setInterval(() => setTemps((temps) => temps + 1), 1000);
+    if(gameState==0){
+      const id = setInterval(() => setTemps((temps) => temps + 1), 1000);
+  
+      return () => {
+        clearInterval(id);
+      };
 
-    return () => {
-      clearInterval(id);
-    };
+    }
   }, []);
 
   function handleClick(X, Y) {
@@ -190,6 +196,7 @@ function App() {
             }
           } else {
             //si clique sur bombe
+            setTempsF(temps)
             copieCases[X][Y] = {
               show: true,
               bomb: copieCases[X][Y].bomb,
@@ -230,6 +237,7 @@ function App() {
         });
 
         if (win) {
+          setTempsF(temps)
           setGameState(2);
         }
       } else {
@@ -293,7 +301,7 @@ function App() {
               handleRestart();
             }}
           />
-          <Timer temps={firstClick?temps:0}></Timer>
+          <Timer temps={firstClick?gameState==0?temps:tempsF:0}></Timer>
         </div>
         <Board
           stateDrapeau={drapeau}
